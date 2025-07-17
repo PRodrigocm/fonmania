@@ -30,7 +30,7 @@ export default function PhoneCard({ phone }: PhoneCardProps) {
 
   return (
     <div
-      className="w-64 h-96 perspective"
+      className="w-full h-96 perspective"
       onClick={() => setFlipped(!flipped)}
       style={{ cursor: "pointer" }}
     >

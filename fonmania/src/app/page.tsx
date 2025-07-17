@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Title from "../components/Title";
 import Header from "../components/Header";
@@ -142,13 +144,6 @@ export default function Home() {
         <FeaturedProducts phones={phones} />
 
         <Accessories />
-
-        {/* Phone Cards Grid */}
-        <div className="flex flex-col gap-8 max-w-md mx-auto">
-          {phones.map((phone) => (
-            <PhoneCard key={phone.id} phone={phone} />
-          ))}
-        </div>
       </main>
 
       {/* Footer */}
