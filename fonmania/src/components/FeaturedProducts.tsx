@@ -121,7 +121,7 @@ export default function FeaturedProducts({ phones }: FeaturedProductsProps) {
           </button>
         )}
         <div 
-          className={`grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 transition-all duration-500 ease-out ${
+          className={`grid grid-cols-1 md:grid-cols-3 gap-12 max-w-[90rem] mx-auto px-8 transition-all duration-500 ease-out ${
             isTransitioning ? 'opacity-0 transform scale-95' : 'transform scale-100'
           }`}
         >
