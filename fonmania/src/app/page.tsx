@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Title from "../components/Title";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PhoneCard from "../components/PhoneCard";
@@ -133,17 +132,22 @@ export default function Home() {
       {/* Header */}
       <Header />
 
+      {/* HeroBanner fuera del main para que ocupe todo el ancho */}
+      <div className="mb-12">
+        <HeroBanner />
+      </div>
+
       {/* Main content */}
       <main className="flex-grow container mx-auto px-6 py-12">
-      <Title level={2}>
-        Venta de Celulares
-      </Title>
 
-        <HeroBanner />
 
-        <FeaturedProducts phones={phones} />
+        <div className="mb-12">
+          <FeaturedProducts phones={phones} />
+        </div>
 
-        <Accessories />
+        <div className="mb-12">
+          <Accessories />
+        </div>
       </main>
 
       {/* Footer */}

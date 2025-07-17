@@ -86,6 +86,7 @@ export default function PhoneCard({ phone }: PhoneCardProps) {
 
       <style jsx>{`
         .perspective {
+        
           perspective: 1000px;
         }
         .transform-style-preserve-3d {
