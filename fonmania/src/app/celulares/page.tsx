@@ -72,7 +72,6 @@ export default function CelularesPage() {
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
       />
-
       <Footer />
     </div>
   );
