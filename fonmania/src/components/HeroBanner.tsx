@@ -1,12 +1,9 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import cat1 from "../../img/cat_1_g1.png";
-import cat2 from "../../img/cat_2_g1.png";
-import cat3 from "../../img/cat_3_g1.png";
 
 const banners = [
   {
-    img: cat1,
+    img: "/img/cat_1_g1.png",
     bg: "#FDBD24", // Amarillo
     title: "Bienvenido a Fonmania",
     desc: "La mejor tienda para comprar celulares y accesorios con las mejores promociones y garantía.",
@@ -15,7 +12,7 @@ const banners = [
     imgClass: ""
   },
   {
-    img: cat2,
+    img: "/img/cat_2_g1.png",
     bg: "#fff", // Blanco
     title: "¡Nuevos Accesorios!",
     desc: "Descubre la nueva colección de accesorios para tu celular con descuentos exclusivos.",
@@ -24,7 +21,7 @@ const banners = [
     imgClass: ""
   },
   {
-    img: cat3,
+    img: "/img/cat_3_g1.png",
     bg: "#000", // Negro
     title: "Promociones Especiales",
     desc: "Aprovecha nuestras ofertas limitadas en celulares de última generación.",
@@ -82,6 +79,8 @@ export default function HeroBanner() {
           <Image 
             src={banner.img} 
             alt="Gato Fonmania" 
+            width={300}
+            height={300}
             className={`w-full max-w-[180px] sm:max-w-[220px] md:max-w-[260px] lg:max-w-[300px] h-auto object-contain ${banner.imgClass}`}
           />
         </div>
