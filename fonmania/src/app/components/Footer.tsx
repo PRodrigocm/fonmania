@@ -1,5 +1,4 @@
 "use client";
-
 import { FaFacebookF, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,12 +12,13 @@ export default function Footer() {
       isCelularesPage ? 'bg-black' : 'bg-[#7100E4]'
     }`}>
       <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-stretch gap-12">
-        <div className="flex-none flex items-center justify-left">
+        <div className="flex-none flex items-center md:justify-start justify-center md:pl-0 pl-2">
           <Image 
             src="/img/logo_footer.png" 
-            alt="fonmania logo" 
-            width={170} 
-            height={60}
+            alt="Logo Footer" 
+            width={120} 
+            height={60} 
+            style={{ width: 'auto', height: 'auto' }}
           />
         </div>
         <div className="flex-1 flex flex-col md:flex-row justify-between gap-12">
@@ -67,4 +67,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+} 

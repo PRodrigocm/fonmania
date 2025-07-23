@@ -1,0 +1,80 @@
+generator cliente {
+  provider = "prisma-client-js"
+}
+
+datasource fonmania {
+  provider = "postgresql" // Cambia a mysql/sqlite si lo prefieres
+  url      = env("DATABASE_URL")
+}
+
+model UsuarioAdmin {
+  id        Int      @id @default(autoincrement())
+  correo    String   @unique
+  contrasena String
+  creadoEn  DateTime @default(now())
+}
+
+model ProductoGeneral {
+  id         Int      @id @default(autoincrement())
+  tipo       String   // 'celular' o 'accesorio'
+  celular    Celular? @relation(fields: [celularId], references: [id])
+  celularId  Int?     @unique
+  accesorio  Accesorio? @relation(fields: [accesorioId], references: [id])
+  accesorioId Int?    @unique
+  items      ItemPedido[]
+}
+
+model Celular {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  precio      Float
+  imagen      String
+  marca       String?
+  color       String?
+  modelo      String?
+  pantalla    String?
+  bateria     String?
+  almacenamiento String?
+  ram         String?
+  camara      String?
+  puertoCarga String?
+  precioPromocion Float?
+  precioDescuento Float?
+  textoPromocion String?
+  productoGeneral ProductoGeneral?
+}
+
+model Accesorio {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  precio      Float
+  imagen      String
+  descripcion String?
+  compatibilidad String?
+  dimensiones String?
+  peso        String?
+  colores     String?
+  precioPromocion Float?
+  precioDescuento Float?
+  textoPromocion String?
+  productoGeneral ProductoGeneral?
+}
+
+model Pedido {
+  id        Int      @id @default(autoincrement())
+  total     Float
+  estado    String   // pendiente, pagado, enviado, etc.
+  creadoEn  DateTime @default(now())
+  items     ItemPedido[]
+  // ...campos de envío, usuario, etc.
+}
+
+model ItemPedido {
+  id         Int      @id @default(autoincrement())
+  pedido     Pedido   @relation(fields: [pedidoId], references: [id])
+  pedidoId   Int
+  producto   ProductoGeneral @relation(fields: [productoGeneralId], references: [id])
+  productoGeneralId Int
+  cantidad   Int
+  precio     Float
+} 

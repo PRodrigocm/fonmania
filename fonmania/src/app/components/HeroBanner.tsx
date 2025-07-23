@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -70,12 +71,12 @@ export default function HeroBanner() {
   return (
     <section
       ref={sectionRef}
-      className={`min-h-screen w-screen flex items-center justify-center transition-colors duration-700 ${visible ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+      className={`min-h-[60vh] w-full flex items-center justify-center transition-colors duration-700 ${visible ? 'opacity-100' : 'opacity-0'} transition-opacity`}
       style={{ background: banner.bg }}
     >
-      <div className={`flex flex-row items-center justify-center w-full max-w-4xl mx-auto gap-4 transition-opacity duration-500 ${fade ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`flex flex-col md:flex-row items-center justify-center w-full max-w-4xl mx-auto gap-8 py-8 transition-opacity duration-500 ${fade ? 'opacity-100' : 'opacity-0'}`}>
         {/* Imagen a la izquierda */}
-        <div className="flex-1 flex justify-center min-w-0">
+        <div className="flex-1 flex justify-center items-center min-w-0">
           <Image 
             src={banner.img} 
             alt="Gato Fonmania" 
@@ -85,7 +86,7 @@ export default function HeroBanner() {
           />
         </div>
         {/* Texto a la derecha */}
-        <div className={`flex-1 text-center md:text-left min-w-0 ${banner.text}`}>
+        <div className={`flex-1 flex flex-col items-center md:items-start text-center md:text-left min-w-0 ${banner.text}`}>
           <h1 className={`text-3xl sm:text-4xl md:text-5xl font-nunito font-bold mb-4 transition-all duration-700 ${banner.text}`}>
             {banner.title}
           </h1>
@@ -110,4 +111,4 @@ export default function HeroBanner() {
       </div>
     </section>
   );
-}
+} 
