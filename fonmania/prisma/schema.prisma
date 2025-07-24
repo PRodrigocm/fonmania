@@ -1,5 +1,6 @@
 generator cliente {
   provider = "prisma-client-js"
+  output ="./ERD"
 }
 
 datasource fonmania {
@@ -77,4 +78,11 @@ model ItemPedido {
   productoGeneralId Int
   cantidad   Int
   precio     Float
+} 
+
+// Generador de diagrama ERD para Prisma
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "./ERD/diagrama.svg"
 } 
