@@ -3,6 +3,7 @@ export interface Producto {
   nombre: string;
   precio: number;
   imagen: string;
+  imagenes?: string[]; // Galería de imágenes adicionales
   marca?: string;
   color?: string;
   // Detalles extendidos
@@ -30,6 +31,16 @@ export interface Producto {
   dimensiones?: string;
   peso?: string;
   colores?: string;
+  // Reseñas
+  reseñas?: Array<{
+    ID: number;
+    calificacion: number;
+    comentario: string;
+    fecha: string;
+    usuario: {
+      nombre: string;
+    };
+  }>;
 }
 
 export interface ItemCarrito extends Producto {

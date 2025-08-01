@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar usuario administrador
-    const admin = await prisma.usuarioAdmin.findUnique({
+    // Buscar usuario en tabla Usuario
+    const admin = await prisma.usuario.findUnique({
       where: { correo: email }
     });
 
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar contraseña
-    const isValidPassword = await bcrypt.compare(password, admin.contrasena);
+    const isValidPassword = await bcrypt.compare(password, admin.password);
 
     if (!isValidPassword) {
       return NextResponse.json(
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     // Generar token JWT
     const token = jwt.sign(
       { 
-        id: admin.id, 
+        id: admin.ID, 
         email: admin.correo,
         role: 'admin'
       },
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
       message: 'Login exitoso',
       token,
       user: {
-        id: admin.id,
+        id: admin.ID,
         email: admin.correo
       }
     });

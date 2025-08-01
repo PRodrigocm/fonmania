@@ -188,7 +188,7 @@ async function main() {
       data: {
         nombre,
         precio,
-        imagen: imagen || "/img/placeholder.png",
+        imagen: imagen || "/img/cat_1.png",
         marca,
         color,
         modelo,
@@ -328,7 +328,7 @@ async function main() {
       data: {
         nombre,
         precio,
-        imagen: imagen || "/img/placeholder.png",
+        imagen: imagen || "/img/cat_1.png",
         descripcion,
         compatibilidad,
         dimensiones,

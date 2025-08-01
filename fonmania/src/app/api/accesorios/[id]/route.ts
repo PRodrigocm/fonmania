@@ -10,22 +10,76 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const accesorioId = parseInt(id);
+    const productoId = parseInt(id);
     
-    const accesorio = await prisma.accesorio.findUnique({
-      where: { id: accesorioId }
+    const producto = await prisma.producto.findUnique({
+      where: { ID: productoId },
+      include: {
+        categoria: true,
+        marca: true,
+        imagenes: {
+          orderBy: {
+            orden: "asc"
+          }
+        },
+        detalles: {
+          include: {
+            detalleCategoria: true
+          }
+        }
+      }
     });
 
-    if (!accesorio) {
+    if (!producto) {
       return NextResponse.json(
-        { message: 'Accesorio no encontrado' },
+        { message: 'Producto no encontrado' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(accesorio);
+    // Verificar que sea un accesorio
+    if (producto.categoria.nombre.toLowerCase() !== 'accesorios') {
+      return NextResponse.json(
+        { message: 'El producto no es un accesorio' },
+        { status: 400 }
+      );
+    }
+
+    // Formatear respuesta similar al endpoint de productos
+    const compatibilidad = producto.detalles.find(d => 
+      d.detalleCategoria.nombre_atributo.toLowerCase().includes('compatibilidad')
+    )?.valor || undefined;
+
+    const dimensiones = producto.detalles.find(d => 
+      d.detalleCategoria.nombre_atributo.toLowerCase().includes('dimension')
+    )?.valor || undefined;
+
+    const peso = producto.detalles.find(d => 
+      d.detalleCategoria.nombre_atributo.toLowerCase().includes('peso')
+    )?.valor || undefined;
+
+    const colores = producto.detalles.find(d => 
+      d.detalleCategoria.nombre_atributo.toLowerCase().includes('colores')
+    )?.valor || undefined;
+
+    const productoFormateado = {
+      id: producto.ID,
+      nombre: producto.nombre,
+      precio: parseFloat(producto.precio.toString()),
+      imagen: producto.imagenes.find(img => img.tipo === 'principal')?.url || producto.imagenes[0]?.url || "",
+      imagenes: producto.imagenes.map(img => img.url),
+      marca: producto.marca.nombre,
+      categoria: producto.categoria.nombre,
+      descripcion: producto.descripcion,
+      compatibilidad,
+      dimensiones,
+      peso,
+      colores
+    };
+
+    return NextResponse.json(productoFormateado);
   } catch (error) {
-    console.error('Error obteniendo accesorio:', error);
+    console.error('Error obteniendo producto:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }
@@ -40,29 +94,42 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const accesorioId = parseInt(id);
+    const productoId = parseInt(id);
     const data = await request.json();
 
-    const accesorio = await prisma.accesorio.update({
-      where: { id: accesorioId },
+    // Verificar que el producto existe y es un accesorio
+    const productoExistente = await prisma.producto.findUnique({
+      where: { ID: productoId },
+      include: { categoria: true }
+    });
+
+    if (!productoExistente) {
+      return NextResponse.json(
+        { message: 'Producto no encontrado' },
+        { status: 404 }
+      );
+    }
+
+    if (productoExistente.categoria.nombre.toLowerCase() !== 'accesorios') {
+      return NextResponse.json(
+        { message: 'El producto no es un accesorio' },
+        { status: 400 }
+      );
+    }
+
+    // Actualizar el producto
+    const producto = await prisma.producto.update({
+      where: { ID: productoId },
       data: {
         nombre: data.nombre,
         precio: parseFloat(data.precio),
-        imagen: data.imagen,
         descripcion: data.descripcion || null,
-        compatibilidad: data.compatibilidad || null,
-        dimensiones: data.dimensiones || null,
-        peso: data.peso || null,
-        colores: data.colores || null,
-        precioPromocion: data.precioPromocion ? parseFloat(data.precioPromocion) : null,
-        precioDescuento: data.precioDescuento ? parseFloat(data.precioDescuento) : null,
-        textoPromocion: data.textoPromocion || null,
       }
     });
 
-    return NextResponse.json(accesorio);
+    return NextResponse.json(producto);
   } catch (error) {
-    console.error('Error actualizando accesorio:', error);
+    console.error('Error actualizando producto:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }
@@ -77,21 +144,36 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const accesorioId = parseInt(id);
+    const productoId = parseInt(id);
 
-    // Primero eliminar el ProductoGeneral asociado
-    await prisma.productoGeneral.deleteMany({
-      where: { accesorioId: accesorioId }
+    // Verificar que el producto existe y es un accesorio
+    const productoExistente = await prisma.producto.findUnique({
+      where: { ID: productoId },
+      include: { categoria: true }
     });
 
-    // Luego eliminar el accesorio
-    await prisma.accesorio.delete({
-      where: { id: accesorioId }
+    if (!productoExistente) {
+      return NextResponse.json(
+        { message: 'Producto no encontrado' },
+        { status: 404 }
+      );
+    }
+
+    if (productoExistente.categoria.nombre.toLowerCase() !== 'accesorios') {
+      return NextResponse.json(
+        { message: 'El producto no es un accesorio' },
+        { status: 400 }
+      );
+    }
+
+    // Eliminar el producto (las imágenes se eliminarán en cascada)
+    await prisma.producto.delete({
+      where: { ID: productoId }
     });
 
-    return NextResponse.json({ message: 'Accesorio eliminado correctamente' });
+    return NextResponse.json({ message: 'Producto eliminado correctamente' });
   } catch (error) {
-    console.error('Error eliminando accesorio:', error);
+    console.error('Error eliminando producto:', error);
     return NextResponse.json(
       { message: 'Error interno del servidor' },
       { status: 500 }

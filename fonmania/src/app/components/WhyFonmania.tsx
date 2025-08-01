@@ -17,7 +17,7 @@ const features = [
     icon: <FaTruck className="text-[var(--color-morado)]" size={40} />, // Envío gratis
     bg: "bg-[var(--color-amarillo)]",
     title: "Envío Gratis",
-    desc: "En compras mayores a $100",
+    desc: "En compras mayores a S/200.00",
   },
 ];
 

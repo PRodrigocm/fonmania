@@ -6,6 +6,14 @@ export async function GET() {
   try {
     const prisma = new PrismaClient();
     
+    // Obtener categorías
+    const categoriaCelular = await prisma.categoria.findFirst({
+      where: { nombre: 'Celular' }
+    });
+    const categoriaAccesorio = await prisma.categoria.findFirst({
+      where: { nombre: 'Accesorio' }
+    });
+    
     const [
       totalCelulares,
       totalAccesorios,
@@ -15,35 +23,31 @@ export async function GET() {
       ventasMes,
       productosConPromocion
     ] = await Promise.all([
-      prisma.celular.count(),
-      prisma.accesorio.count(),
+      prisma.producto.count({
+        where: categoriaCelular ? { categoriaID: categoriaCelular.ID } : { ID: 0 }
+      }),
+      prisma.producto.count({
+        where: categoriaAccesorio ? { categoriaID: categoriaAccesorio.ID } : { ID: 0 }
+      }),
       prisma.pedido.count(),
       prisma.pedido.count({ where: { estado: 'PENDIENTE' } }),
       prisma.pedido.aggregate({
         where: {
-          creadoEn: {
-            gte: new Date(new Date().setHours(0, 0, 0, 0))
+          fecha: {
+            gte: new Date(new Date().setHours(0, 0, 0, 0)).toISOString()
           }
         },
         _sum: { total: true }
       }),
       prisma.pedido.aggregate({
         where: {
-          creadoEn: {
-            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+          fecha: {
+            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
           }
         },
         _sum: { total: true }
       }),
-      prisma.celular.count({
-        where: {
-          OR: [
-            { precioPromocion: { not: null } },
-            { precioDescuento: { not: null } },
-            { textoPromocion: { not: null } }
-          ]
-        }
-      })
+      prisma.productoPromocion.count()
     ]);
 
     const stats = {

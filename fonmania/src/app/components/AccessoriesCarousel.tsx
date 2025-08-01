@@ -13,8 +13,7 @@ export default function AccessoriesCarousel({ onAddToCart }: { onAddToCart?: (it
       .then(res => res.json())
       .then((data) => {
         const arr = Array.isArray(data) ? data : [];
-        const soloAccesorios = arr.map((p) => p.accesorio).filter(Boolean);
-        setAccesorios(soloAccesorios);
+        setAccesorios(arr);
       })
       .catch(() => setAccesorios([]));
   }, []);
@@ -52,12 +51,13 @@ export default function AccessoriesCarousel({ onAddToCart }: { onAddToCart?: (it
           {visibleAccessories.map((a) => (
             <div
               key={a.id}
-              className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center cursor-pointer hover:scale-105 transition min-w-[260px] max-w-[320px]"
+              className="bg-white rounded-2xl shadow-2xl p-6 flex flex-col items-center cursor-pointer hover:scale-105 transition w-[280px] h-[420px]"
               onClick={() => setModal(a)}
             >
               <Image src={getImageSrc(a)} alt={a.nombre || "Accesorio"} width={180} height={180} className="mb-4 object-contain w-full max-w-[180px] h-auto" priority style={{ height: "auto" }} />
               <h3 className="font-title text-2xl mt-2 mb-2">{a.nombre}</h3>
-              <span className="text-xl font-bold text-[var(--color-morado)]">S/ {typeof a.precio === 'number' && !isNaN(a.precio) ? a.precio.toFixed(2) : '--'}</span>
+              <span className="text-xl font-bold text-[var(--color-morado)]">S/ {typeof a.precio === 'number' ? a.precio.toFixed(2) : a.precio}</span>
+              {a.marca && <p className="text-sm text-gray-600 mt-1">{a.marca}</p>}
             </div>
           ))}
         </div>

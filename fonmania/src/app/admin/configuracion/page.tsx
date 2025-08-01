@@ -114,6 +114,7 @@ export default function AdminConfiguracion() {
         }
       }));
     } else {
+      // Para campos generales (nombreSitio, descripcion, emailContacto, telefono, direccion)
       setConfiguracion(prev => ({
         ...prev,
         [campo]: valor

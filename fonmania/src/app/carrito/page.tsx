@@ -4,7 +4,10 @@ import Footer from "../components/Footer";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "../components/CartContext";
-import { FaTrash, FaArrowLeft } from "react-icons/fa";
+import { FaTrash, FaArrowLeft, FaLock, FaEye } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import ProductModal from "../components/ProductModal";
+import type { Producto } from "../types";
 
 export default function Carrito() {
   const { 
@@ -17,6 +20,15 @@ export default function Carrito() {
     getItemCount 
   } = useCart();
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Producto | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    const userData = localStorage.getItem("userData");
+    setIsAuthenticated(!!(token && userData));
+  }, []);
 
   const cambiarCantidad = (id: number, delta: number) => {
     const item = items.find(p => p.id === id);
@@ -27,6 +39,24 @@ export default function Carrito() {
 
   const eliminarProducto = (id: number) => {
     removeFromCart(id);
+  };
+
+  const handleProceedToCheckout = () => {
+    if (!isAuthenticated) {
+      router.push("/login?redirect=/carrito/checkout");
+      return;
+    }
+    router.push("/carrito/checkout");
+  };
+
+  const handleProductClick = (producto: Producto) => {
+    setSelectedProduct(producto);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
   };
 
   const subtotal = getSubtotal();
@@ -80,24 +110,35 @@ export default function Carrito() {
           <div className="flex flex-col gap-4 mb-6">
             {items.map((producto) => (
               <div key={producto.id} className="flex items-center gap-4 bg-gray-50 rounded-xl p-4">
-                <Image 
-                  src={producto.imagen && producto.imagen.trim() !== "" ? producto.imagen : "/img/placeholder.png"}
-                  alt={producto.nombre}
-                  width={60}
-                  height={60}
-                  className="rounded-lg bg-gray-200 object-cover"
-                />
-                <div className="flex-1">
-                  <div className="font-title text-lg font-bold text-[var(--color-morado)]">
-                    {producto.nombre}
+                <div 
+                  className="flex items-center gap-4 flex-1 cursor-pointer hover:bg-gray-100 rounded-lg p-2 transition"
+                  onClick={() => handleProductClick(producto)}
+                >
+                  <Image 
+                    src={producto.imagen && producto.imagen.trim() !== "" ? producto.imagen : "/img/cat_1.png"}
+                    alt={producto.nombre}
+                    width={60}
+                    height={60}
+                    className="rounded-lg bg-gray-200 object-cover"
+                  />
+                  <div className="flex-1">
+                    <div className="font-title text-lg font-bold text-[var(--color-morado)] hover:text-[var(--color-amarillo)] transition">
+                      {producto.nombre}
+                    </div>
+                    {producto.marca && (
+                      <div className="text-sm text-gray-600">{producto.marca}</div>
+                    )}
+                    <div className="text-[var(--color-morado)] font-bold">
+                      S/ {producto.precio.toFixed(2)}
+                    </div>
+                    <div className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                      <FaEye className="text-xs" />
+                      <span>Click para ver detalles</span>
+                    </div>
                   </div>
-                  {producto.marca && (
-                    <div className="text-sm text-gray-600">{producto.marca}</div>
-                  )}
-                  <div className="text-[var(--color-morado)] font-bold">
-                    S/ {producto.precio.toFixed(2)}
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <div className="flex items-center gap-2">
                     <button 
                       onClick={() => cambiarCantidad(producto.id, -1)} 
                       className="w-7 h-7 rounded bg-gray-200 text-xl font-bold flex items-center justify-center hover:bg-gray-300 transition"
@@ -113,14 +154,14 @@ export default function Carrito() {
                     >
                       +
                     </button>
-                    <button 
-                      onClick={() => eliminarProducto(producto.id)} 
-                      className="ml-4 text-red-500 font-title font-semibold hover:text-red-700 transition flex items-center gap-1"
-                    >
-                      <FaTrash className="text-sm" /> Eliminar
-                    </button>
                   </div>
-                  <div className="text-sm text-gray-600 mt-1">
+                  <button 
+                    onClick={() => eliminarProducto(producto.id)} 
+                    className="text-red-500 font-title font-semibold hover:text-red-700 transition flex items-center gap-1 text-sm"
+                  >
+                    <FaTrash className="text-xs" /> Eliminar
+                  </button>
+                  <div className="text-sm text-gray-600">
                     Subtotal: S/ {(producto.precio * producto.cantidad).toFixed(2)}
                   </div>
                 </div>
@@ -141,11 +182,11 @@ export default function Carrito() {
             </div>
             {envio === 0 ? (
             <div className="mb-2 text-green-600 text-sm font-semibold">
-              ¡Envío gratis por compras mayores a S/ 100!
+              ¡Envío gratis por compras mayores a S/ 200!
             </div>
             ) : (
               <div className="mb-2 text-gray-500 text-sm">
-                Agrega S/ {(100 - subtotal).toFixed(2)} más para envío gratis
+                Agrega S/ {(200 - subtotal).toFixed(2)} más para envío gratis
               </div>
             )}
             <div className="flex justify-between items-center border-t pt-4 mt-2">
@@ -154,16 +195,38 @@ export default function Carrito() {
                 S/ {total.toFixed(2)}
               </span>
             </div>
+            
+            {/* Botón de proceder al pago con verificación de autenticación */}
             <button 
-              className="w-full mt-6 py-3 rounded-xl bg-[var(--color-morado)] text-[var(--color-amarillo)] font-title text-lg font-bold shadow-lg hover:bg-[var(--color-amarillo)] hover:text-[var(--color-morado)] transition"
-              onClick={() => router.push("/carrito/checkout")}
+              className="w-full mt-6 py-3 rounded-xl bg-[var(--color-morado)] text-[var(--color-amarillo)] font-title text-lg font-bold shadow-lg hover:bg-[var(--color-amarillo)] hover:text-[var(--color-morado)] transition flex items-center justify-center gap-2"
+              onClick={handleProceedToCheckout}
             >
-              Proceder al Pago
+              {isAuthenticated ? (
+                "Proceder al Pago"
+              ) : (
+                <>
+                  <FaLock className="text-sm" />
+                  Iniciar Sesión para Pagar
+                </>
+              )}
             </button>
+            
+            {!isAuthenticated && (
+              <p className="text-center text-sm text-gray-600 mt-2">
+                Necesitas iniciar sesión para completar tu compra
+              </p>
+            )}
           </div>
         </div>
       </main>
       <Footer />
+
+      {/* Modal de producto */}
+      <ProductModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        producto={selectedProduct || undefined}
+      />
     </div>
   );
 } 

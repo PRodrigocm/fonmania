@@ -10,16 +10,15 @@ export default function PhoneCarousel({ onAddToCart }: { onAddToCart?: (item: Pr
   const [modal, setModal] = useState<Producto | null>(null);
 
   useEffect(() => {
-    fetch("/api/productos")
+    fetch("/api/celulares")
       .then(res => res.json())
       .then((data) => {
         const arr = Array.isArray(data) ? data : [];
-        // Extrae solo los objetos 'celular' que tengan promoción
-        const promos = arr
-          .map((p) => p.celular)
-          .filter((c) => c && (c.precioPromocion || c.precioDescuento));
+        // Filtrar productos que tengan promoción o mostrar todos si no hay promociones
+        const promos = arr.filter((p) => p && p.precio);
         setTelefonos(promos);
-      });
+      })
+      .catch(() => setTelefonos([]));
   }, []);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
@@ -54,14 +53,15 @@ export default function PhoneCarousel({ onAddToCart }: { onAddToCart?: (item: Pr
           {visiblePhones.map((p) => (
             <div
               key={p.id}
-              className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center cursor-pointer hover:scale-105 transition min-w-[260px] max-w-[320px]"
+              className="bg-white rounded-2xl shadow-2xl p-6 flex flex-col items-center cursor-pointer hover:scale-105 transition w-[280px] h-[420px]"
               onClick={() => setModal(p)}
             >
               {getImageSrc(p) && (
                 <Image src={getImageSrc(p)!} alt={p.nombre} width={180} height={180} className="mb-4" priority style={{ height: "auto" }} />
               )}
               <h3 className="font-title text-2xl mt-2 mb-2">{p.nombre}</h3>
-              <span className="text-xl font-bold text-[var(--color-morado)]">S/ {p.precioPromocion || p.precioDescuento || p.precio}</span>
+              <span className="text-xl font-bold text-[var(--color-morado)]">S/ {typeof p.precio === 'number' ? p.precio.toFixed(2) : p.precio}</span>
+              {p.marca && <p className="text-sm text-gray-600 mt-1">{p.marca}</p>}
             </div>
           ))}
         </div>

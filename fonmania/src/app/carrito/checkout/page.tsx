@@ -1,6 +1,7 @@
 "use client";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import AuthGuard from "../../components/AuthGuard";
 import { useState, useEffect } from "react";
 import { FaCreditCard, FaMobileAlt, FaTag, FaArrowLeft } from "react-icons/fa";
 import { useCart } from "../../components/CartContext";
@@ -8,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 const pasos = ["Envío", "Pago", "Confirmar", "Listo"];
 
-export default function Checkout() {
+function CheckoutContent() {
   const { 
     items, 
     getSubtotal, 
@@ -278,5 +279,13 @@ export default function Checkout() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function Checkout() {
+  return (
+    <AuthGuard>
+      <CheckoutContent />
+    </AuthGuard>
   );
 } 

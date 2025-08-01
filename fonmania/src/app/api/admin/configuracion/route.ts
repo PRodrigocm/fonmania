@@ -23,19 +23,7 @@ let configuracion = {
 // GET - Obtener configuración
 export async function GET() {
   try {
-    // Simulación de datos de configuración
-    const configuracion = {
-      nombreTienda: 'Fonmania',
-      emailContacto: 'contacto@fonmania.com',
-      telefonoContacto: '+57 300 123 4567',
-      direccion: 'Calle 123 #45-67, Bogotá',
-      horarioAtencion: 'Lun-Vie: 9:00 AM - 6:00 PM',
-      moneda: 'COP',
-      impuestos: 19,
-      envioGratis: 50000,
-      maxProductosCarrito: 10
-    };
-    
+    // Retornar la configuración con la estructura correcta que espera el frontend
     return NextResponse.json(configuracion);
   } catch (error) {
     console.error('Error obteniendo configuración:', error);

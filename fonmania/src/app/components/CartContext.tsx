@@ -77,7 +77,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const getShippingCost = () => {
     const subtotal = getSubtotal();
-    return subtotal > 100 ? 0 : 10;
+    return subtotal > 200 ? 0 : 10;
   };
 
   const getTotal = () => {
