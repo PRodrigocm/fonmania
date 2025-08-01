@@ -13,7 +13,7 @@ export default function Inicio() {
   return (
     <div className="min-h-screen bg-[var(--color-blanco)] text-[var(--color-negro)]">
       <Header carritoCount={getItemCount()} />
-      <main className="w-full py-8 px-2 sm:px-6 md:px-12">
+      <main className="w-full">
         <HeroBanner />
         <WhyFonomania />
         <PhoneCarousel onAddToCart={addToCart} />
