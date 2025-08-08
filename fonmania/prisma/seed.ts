@@ -1,9 +1,194 @@
-// Archivo convertido a JavaScript CommonJS para compatibilidad
-const { PrismaClient } = require('@prisma/client');
-console.log('INICIO SEED');
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
 const prisma = new PrismaClient();
 
 async function main() {
+  // Limpiar datos según dependencias
+  await prisma.pedidoDetalle.deleteMany();
+  await prisma.pedido.deleteMany();
+  await prisma.envio.deleteMany();
+  await prisma.favorito.deleteMany();
+  await prisma.productoPromocion.deleteMany();
+  await prisma.imagenProducto.deleteMany();
+  await prisma.producto.deleteMany();
+  await prisma.marca.deleteMany();
+  await prisma.categoria.deleteMany();
+  await prisma.usuario.deleteMany();
+  await prisma.rolPermiso.deleteMany();
+  await prisma.rol.deleteMany();
+  await prisma.permiso.deleteMany();
+
+  // Roles y permisos básicos
+  const rolAdmin = await prisma.rol.create({ data: { nombre: 'Administrador' } });
+  const permisoAdmin = await prisma.permiso.create({ data: { descripcion: 'Acceso total' } });
+  const rolPermisoAdmin = await prisma.rolPermiso.create({
+    data: {
+      rolID: rolAdmin.ID,
+      permisoID: permisoAdmin.ID
+    }
+  });
+
+  // Usuario administrador
+  const passwordHash = await bcrypt.hash('admin123', 10);
+  await prisma.usuario.create({
+    data: {
+      nombre: 'Admin',
+      correo: 'admin@fonmania.com',
+      password: passwordHash,
+      direccion: 'Perú',
+      DNI: 99999999,
+      fecha_creacion: new Date(),
+      rolpermisoID: rolPermisoAdmin.ID
+    }
+  });
+
+  // Categorías
+  const catCelular = await prisma.categoria.create({ data: { nombre: 'Celular' } });
+  const catAccesorio = await prisma.categoria.create({ data: { nombre: 'Accesorio' } });
+
+  // Marcas
+  const samsung = await prisma.marca.create({ data: { nombre: 'Samsung' } });
+  const apple = await prisma.marca.create({ data: { nombre: 'Apple' } });
+
+  // Productos de ejemplo
+  const s23 = await prisma.producto.create({
+    data: {
+      nombre: 'Samsung Galaxy S23',
+      categoriaID: catCelular.ID,
+      stock: 50,
+      precio: 3499.99,
+      marcaID: samsung.ID,
+      descripcion: 'Flagship Samsung',
+      ram: '8GB',
+      almacenamiento: '128GB',
+      dimensiones: '146 x 71 x 7.6 mm',
+      modelo: 'SM-S911B',
+      color: 'Negro',
+      sistema_operativo: 'Android 13'
+    }
+  });
+  await prisma.imagenProducto.create({
+    data: { productoID: s23.ID, url: '/img/cat_1.png', tipo: 'principal', orden: 1 }
+  });
+
+  const iphone = await prisma.producto.create({
+    data: {
+      nombre: 'iPhone 14 Pro',
+      categoriaID: catCelular.ID,
+      stock: 30,
+      precio: 5999.99,
+      marcaID: apple.ID,
+      descripcion: 'Flagship Apple',
+      ram: '6GB',
+      almacenamiento: '256GB',
+      dimensiones: '147.5 x 71.5 x 7.9 mm',
+      modelo: 'A2890',
+      color: 'Morado',
+      sistema_operativo: 'iOS 17'
+    }
+  });
+  await prisma.imagenProducto.create({
+    data: { productoID: iphone.ID, url: '/img/cat_2.png', tipo: 'principal', orden: 1 }
+  });
+
+  console.log('✅ Seed completado');
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+
+
+  Crea categorías, marcas y productos con los nuevos campos directos.
+*/
+import { PrismaClient } from '@prisma/client';
+console.log('=== Iniciando seed ===');
+const prisma = new PrismaClient();
+
+async function main() {
+  // Limpieza de datos
+  await prisma.pedidoDetalle.deleteMany();
+  await prisma.pedido.deleteMany();
+  await prisma.productoPromocion.deleteMany();
+  await prisma.imagenProducto.deleteMany();
+  await prisma.producto.deleteMany();
+  await prisma.marca.deleteMany();
+  await prisma.categoria.deleteMany();
+
+  // Categorías
+  const [catCelular, catAccesorio] = await Promise.all([
+    prisma.categoria.create({ data: { nombre: 'Celular' } }),
+    prisma.categoria.create({ data: { nombre: 'Accesorio' } }),
+  ]);
+
+  // Marcas
+  const [samsung, apple] = await Promise.all([
+    prisma.marca.create({ data: { nombre: 'Samsung' } }),
+    prisma.marca.create({ data: { nombre: 'Apple' } }),
+  ]);
+
+  // Productos
+  const s23 = await prisma.producto.create({
+    data: {
+      nombre: 'Samsung Galaxy S23',
+      categoriaID: catCelular.ID,
+      stock: 50,
+      precio: 3499.99,
+      marcaID: samsung.ID,
+      descripcion: 'Último flagship de Samsung',
+      ram: '8GB',
+      almacenamiento: '128GB',
+      dimensiones: '146.3 x 70.9 x 7.6 mm',
+      modelo: 'SM-S911B',
+      color: 'Negro',
+      sistema_operativo: 'Android 13'
+    }
+  });
+
+  // Imagen principal
+  await prisma.imagenProducto.create({
+    data: {
+      productoID: s23.ID,
+      url: '/img/cat_1.png',
+      tipo: 'principal',
+      orden: 1
+    }
+  });
+
+  const iphone = await prisma.producto.create({
+    data: {
+      nombre: 'iPhone 14 Pro',
+      categoriaID: catCelular.ID,
+      stock: 30,
+      precio: 5999.99,
+      marcaID: apple.ID,
+      descripcion: 'Flagship de Apple',
+      ram: '6GB',
+      almacenamiento: '256GB',
+      dimensiones: '147.5 x 71.5 x 7.9 mm',
+      modelo: 'A2890',
+      color: 'Morado oscuro',
+      sistema_operativo: 'iOS 17'
+    }
+  });
+
+  await prisma.imagenProducto.create({
+    data: {
+      productoID: iphone.ID,
+      url: '/img/cat_2.png',
+      tipo: 'principal',
+      orden: 1
+    }
+  });
+
+  console.log('Se crearon productos:', [s23.nombre, iphone.nombre]);
+}
   // Borrar todos los datos antes de poblar (orden correcto por claves foráneas)
   await prisma.itemPedido.deleteMany();
   await prisma.pedido.deleteMany();
@@ -386,4 +571,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
+    console.log('=== Seed completado ===');
   }); 

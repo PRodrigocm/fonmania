@@ -27,11 +27,6 @@ export async function GET(
           orderBy: {
             orden: "asc"
           }
-        },
-        detalles: {
-          include: {
-            detalleCategoria: true
-          }
         }
       }
     });
@@ -43,56 +38,30 @@ export async function GET(
       );
     }
 
-    // Buscar detalles específicos
-    const color = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('color')
-    )?.valor || undefined;
+    // Extraer campos directos
+    const { color } = producto as any;
     
-    const almacenamiento = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('almacenamiento') ||
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('storage')
-    )?.valor || undefined;
+    const { almacenamiento } = producto as any;
 
-    const modelo = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('modelo')
-    )?.valor || undefined;
+    const { modelo } = producto as any;
 
-    const pantalla = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('pantalla')
-    )?.valor || undefined;
+    const pantalla = undefined;
 
-    const bateria = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('bateria')
-    )?.valor || undefined;
+    const bateria = undefined;
 
-    const camara = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('camara')
-    )?.valor || undefined;
+    const camara = undefined;
 
-    const ram = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('ram')
-    )?.valor || undefined;
+    const { ram } = producto as any;
 
-    const puertoCarga = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('puerto') ||
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('carga')
-    )?.valor || undefined;
+    const puertoCarga = undefined;
 
-    const compatibilidad = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('compatibilidad')
-    )?.valor || undefined;
+    const { compatibilidad } = producto as any;
 
-    const dimensiones = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('dimension')
-    )?.valor || undefined;
+    const { dimensiones } = producto as any;
 
-    const peso = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('peso')
-    )?.valor || undefined;
+    const { peso } = producto as any;
 
-    const colores = producto.detalles.find(d => 
-      d.detalleCategoria.nombre_atributo.toLowerCase().includes('colores')
-    )?.valor || undefined;
+    const { colores } = producto as any;
 
     const productoFormateado = {
       id: producto.ID,

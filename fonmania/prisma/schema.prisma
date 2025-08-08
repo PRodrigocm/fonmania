@@ -3,67 +3,47 @@ generator cliente {
 }
 
 datasource fonmania {
-  provider = "postgresql" // Cambia a mysql/sqlite si lo prefieres
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Categoria {
-  ID                Int                @id @default(autoincrement())
-  nombre            String             @unique
-  detallesCategoria DetalleCategoria[]
-  productos         Producto[]
-}
-
-model DetalleCategoria {
-  ID              Int    @id @default(autoincrement())
-  categoriaID     Int
-  nombre_atributo String
-  tipo_dato       String
-  unidad          String
-
-  categoria        Categoria         @relation(fields: [categoriaID], references: [ID])
-  productoDetalles ProductoDetalle[]
-
-  @@unique([categoriaID, nombre_atributo])
+  ID        Int       @id @default(autoincrement())
+  nombre    String    @unique
+  productos Producto[]
 }
 
 model Producto {
-  ID          Int    @id @default(autoincrement())
-  nombre      String
-  categoriaID Int
-  stock       Int
-  precio      Float
-  marcaID     Int
-  descripcion String
+  ID                Int    @id @default(autoincrement())
+  nombre            String
+  categoriaID       Int
+  stock             Int
+  precio            Float
+  marcaID           Int
+  descripcion       String
+  ram               String
+  almacenamiento    String
+  dimensiones       String
+  modelo            String
+  color             String
+  sistema_operativo String
 
   categoria      Categoria           @relation(fields: [categoriaID], references: [ID])
   marca          Marca               @relation(fields: [marcaID], references: [ID])
   imagenes       ImagenProducto[]
-  detalles       ProductoDetalle[]
   promociones    ProductoPromocion[]
   pedidoDetalles PedidoDetalle[]
-
-  favoritos Favorito[]
+  favoritos      Favorito[]
 }
 
 model ImagenProducto {
   ID         Int    @id @default(autoincrement())
   productoID Int
-  url        String // Ruta o enlace a la imagen
-  tipo       String // "principal", "galeria", "zoom", etc.
-  orden      Int? // Para definir el orden de visualización (opcional)
+  url        String
+  tipo       String
+  orden      Int?
 
   producto Producto @relation(fields: [productoID], references: [ID], onDelete: Cascade)
-}
-
-model ProductoDetalle {
-  ID                 Int    @id @default(autoincrement())
-  productoID         Int
-  detallecategoriaID Int
-  valor              String
-
-  producto         Producto         @relation(fields: [productoID], references: [ID])
-  detalleCategoria DetalleCategoria @relation(fields: [detallecategoriaID], references: [ID])
 }
 
 model Marca {
@@ -100,8 +80,8 @@ model Pedido {
   usuarioID    Int
   metodoPagoID Int?
 
-  usuario    Usuario         @relation(fields: [usuarioID], references: [ID])
-  metodoPago MetodoPago?     @relation("MetodoPagoPedidos", fields: [metodoPagoID], references: [ID])
+  usuario    Usuario     @relation(fields: [usuarioID], references: [ID])
+  metodoPago MetodoPago? @relation("MetodoPagoPedidos", fields: [metodoPagoID], references: [ID])
   detalles   PedidoDetalle[]
   envio      Envio?
 }
@@ -148,8 +128,7 @@ model Usuario {
 
   rolPermiso RolPermiso @relation(fields: [rolpermisoID], references: [ID])
   pedidos    Pedido[]
-
-  favoritos Favorito[]
+  favoritos  Favorito[]
 }
 
 model Favorito {

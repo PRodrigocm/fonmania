@@ -22,29 +22,12 @@ export async function GET() {
         imagenes: {
           where: { tipo: 'principal' },
           take: 1
-        },
-        detalles: {
-          include: {
-            detalleCategoria: true
-          }
         }
       }
     });
 
     const celularesFormateados = celulares.map((producto) => {
-      // Buscar detalles específicos
-      const color = producto.detalles.find((d) => 
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('color')
-      )?.valor || 'N/A';
-      
-      const almacenamiento = producto.detalles.find((d) => 
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('almacenamiento') ||
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('storage')
-      )?.valor || 'N/A';
-
-      const modelo = producto.detalles.find((d) => 
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('modelo')
-      )?.valor || 'N/A';
+      const { color, almacenamiento, modelo } = producto as any;
 
       return {
         id: producto.ID,
@@ -78,7 +61,7 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
 
-    // Obtener la categoría de celulares
+    // Obtener la categoría "Celular"
     const categoriaCelular = await prisma.categoria.findFirst({
       where: { nombre: 'Celular' }
     });
@@ -96,12 +79,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!marca) {
-      marca = await prisma.marca.create({
-        data: { nombre: data.marca || 'Genérica' }
-      });
+      marca = await prisma.marca.create({ data: { nombre: data.marca || 'Genérica' } });
     }
 
-    // Crear el producto
+    // Crear el producto con los nuevos campos directos
     const producto = await prisma.producto.create({
       data: {
         nombre: data.nombre,
@@ -109,11 +90,17 @@ export async function POST(request: NextRequest) {
         descripcion: data.descripcion || '',
         stock: data.stock || 0,
         categoriaID: categoriaCelular.ID,
-        marcaID: marca.ID
+        marcaID: marca.ID,
+        color: data.color || null,
+        almacenamiento: data.almacenamiento || null,
+        modelo: data.modelo || null,
+        ram: data.ram || null,
+        dimensiones: data.dimensiones || null,
+        sistema_operativo: data.sistema_operativo || null
       }
     });
 
-    // Crear imagen principal si se proporciona
+    // Imagen principal
     if (data.imagen) {
       await prisma.imagenProducto.create({
         data: {
@@ -125,167 +112,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Crear detalles del producto si se proporcionan
-    if (data.color) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Color'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.color
-          }
-        });
-      }
-    }
-
-    if (data.modelo) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Modelo'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.modelo
-          }
-        });
-      }
-    }
-
-    if (data.almacenamiento) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Almacenamiento'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.almacenamiento
-          }
-        });
-      }
-    }
-
-    if (data.pantalla) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Pantalla'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.pantalla
-          }
-        });
-      }
-    }
-
-    if (data.bateria) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Batería'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.bateria
-          }
-        });
-      }
-    }
-
-    if (data.camara) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Cámara'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.camara
-          }
-        });
-      }
-    }
-
-    if (data.ram) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'RAM'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.ram
-          }
-        });
-      }
-    }
-
-    if (data.puertoCarga) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaCelular.ID,
-          nombre_atributo: 'Puerto de Carga'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.puertoCarga
-          }
-        });
-      }
-    }
-
     return NextResponse.json(producto, { status: 201 });
   } catch (error) {
     console.error('Error creando producto:', error);
-    return NextResponse.json(
-      { message: 'Error interno del servidor' },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: 'Error interno del servidor' }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }
-} 
+}
