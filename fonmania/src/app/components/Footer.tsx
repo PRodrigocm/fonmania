@@ -1,6 +1,7 @@
 "use client";
 import { FaFacebookF, FaTwitter, FaYoutube, FaTiktok } from "react-icons/fa";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
@@ -44,6 +45,9 @@ export default function Footer() {
               <li>Política de Devoluciones</li>
               <li>Envíos</li>
               <li>Contacto Soporte</li>
+              <li>
+                <Link href="/admin/login" className="underline hover:text-yellow-400">Acceso Admin</Link>
+              </li>
             </ul>
           </div>
           <div className="flex-1">

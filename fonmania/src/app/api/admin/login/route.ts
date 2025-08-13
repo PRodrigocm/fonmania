@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         email: admin.correo,
         role: 'admin'
       },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '24h' }
     );
 

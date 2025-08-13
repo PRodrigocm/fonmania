@@ -87,16 +87,16 @@ export async function POST(request: NextRequest) {
       data: {
         nombre: data.nombre,
         precio: parseFloat(data.precio),
-        descripcion: data.descripcion || '',
+        descripcion: data.descripcion || 'Sin descripción',
         stock: data.stock || 0,
         categoriaID: categoriaCelular.ID,
         marcaID: marca.ID,
-        color: data.color || null,
-        almacenamiento: data.almacenamiento || null,
-        modelo: data.modelo || null,
-        ram: data.ram || null,
-        dimensiones: data.dimensiones || null,
-        sistema_operativo: data.sistema_operativo || null
+        color: data.color || 'N/A',
+        almacenamiento: data.almacenamiento || 'N/A',
+        modelo: data.modelo || 'N/A',
+        ram: data.ram || 'N/A',
+        dimensiones: data.dimensiones || 'N/A',
+        sistema_operativo: data.sistema_operativo || 'N/A'
       }
     });
 

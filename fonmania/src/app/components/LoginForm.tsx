@@ -18,16 +18,6 @@ export default function LoginForm({ onSuccess, redirectTo }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Obtener redirectTo de los parámetros de URL si no se proporciona
-  useEffect(() => {
-    if (!redirectTo) {
-      const redirectParam = searchParams.get("redirect");
-      if (redirectParam) {
-        redirectTo = redirectParam;
-      }
-    }
-  }, [searchParams, redirectTo]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -66,7 +56,7 @@ export default function LoginForm({ onSuccess, redirectTo }: LoginFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-blanco)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--color-blanco)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="font-title text-3xl font-bold text-[var(--color-negro)]">

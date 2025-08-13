@@ -78,14 +78,14 @@ export async function GET(request: NextRequest) {
     // Contar productos con promociones (usando la tabla de promociones)
     const productosPromocion = await prisma.productoPromocion.count();
 
-    // Datos de ejemplo para ventas por mes
+    // Datos de ejemplo para ventas por mes (todos en cero)
     const ventasPorMes = [
-      { mes: 'Enero', ventas: 15000 },
-      { mes: 'Febrero', ventas: 18000 },
-      { mes: 'Marzo', ventas: 22000 },
-      { mes: 'Abril', ventas: 19000 },
-      { mes: 'Mayo', ventas: 25000 },
-      { mes: 'Junio', ventas: 28000 },
+      { mes: 'Enero', ventas: 0 },
+      { mes: 'Febrero', ventas: 0 },
+      { mes: 'Marzo', ventas: 0 },
+      { mes: 'Abril', ventas: 0 },
+      { mes: 'Mayo', ventas: 0 },
+      { mes: 'Junio', ventas: 0 },
     ];
 
     // Datos de ejemplo para productos más vendidos

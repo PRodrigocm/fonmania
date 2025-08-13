@@ -29,9 +29,28 @@ export default function ImageGallery({ images, alt, className = "" }: ImageGalle
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`flex flex-col md:flex-row ${className}`}>
+      {/* Miniaturas (vertical en md+) */}
+      {images.length > 1 && (
+        <div className="hidden md:flex md:flex-col md:gap-2 md:mr-4 md:overflow-y-auto md:max-h-[400px]">
+          {images.map((image, index) => (
+            <button
+              key={index}
+              onClick={() => goToImage(index)}
+              className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition flex-shrink-0 ${
+                index === currentIndex
+                  ? 'border-[var(--color-morado)]'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Image src={image} alt={`${alt} mini ${index}`} fill className="object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Imagen principal */}
-      <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+      <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden flex-grow">
         <Image
           src={images[currentIndex]}
           alt={`${alt} - Imagen ${currentIndex + 1}`}
@@ -61,9 +80,9 @@ export default function ImageGallery({ images, alt, className = "" }: ImageGalle
         )}
       </div>
 
-      {/* Miniaturas */}
+      {/* Miniaturas horizontales en móvil */}
       {images.length > 1 && (
-        <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+        <div className="flex gap-2 mt-4 overflow-x-auto pb-2 md:hidden">
           {images.map((image, index) => (
             <button
               key={index}

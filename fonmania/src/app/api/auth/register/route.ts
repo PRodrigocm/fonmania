@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { ActivityService } from '../../../../services/activityService';
 
 const prisma = new PrismaClient();
 
@@ -40,12 +41,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Obtener el rol de usuario por defecto (asumiendo que existe un rol "Usuario")
-    const rolUsuario = await prisma.rol.findFirst({
+    // Obtener el rol de cliente por defecto
+    const rolCliente = await prisma.rol.findFirst({
       where: { nombre: 'Usuario' }
     });
 
-    if (!rolUsuario) {
+    if (!rolCliente) {
       return NextResponse.json(
         { message: 'Error de configuración del sistema' },
         { status: 500 }
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
     // Crear o obtener RolPermiso
     let rolPermiso = await prisma.rolPermiso.findFirst({
       where: {
-        rolID: rolUsuario.ID,
+        rolID: rolCliente.ID,
         permisoID: permisoBasico.ID
       }
     });
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
     if (!rolPermiso) {
       rolPermiso = await prisma.rolPermiso.create({
         data: {
-          rolID: rolUsuario.ID,
+          rolID: rolCliente.ID,
           permisoID: permisoBasico.ID
         }
       });
@@ -116,6 +117,9 @@ export async function POST(request: NextRequest) {
       process.env.JWT_SECRET || 'tu-secret-key',
       { expiresIn: '7d' }
     );
+
+    // Registrar actividad
+    await ActivityService.logUserRegistered(nuevoUsuario.nombre, nuevoUsuario.ID);
 
     // Retornar datos del usuario (sin contraseña)
     const userData = {

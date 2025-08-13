@@ -34,6 +34,7 @@ export default function AdminCelulares() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingCelular, setEditingCelular] = useState<Celular | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -67,6 +68,34 @@ export default function AdminCelulares() {
       console.error('Error fetching celulares:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) {
+      return;
+    }
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.success) {
+        setFormData(prev => ({ ...prev, imagen: data.url }));
+      } else {
+        alert('Error al subir la imagen: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Ocurrió un error al subir la imagen.');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -391,14 +420,32 @@ export default function AdminCelulares() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">URL de Imagen</label>
-                  <input
-                    type="url"
-                    required
-                    value={formData.imagen}
-                    onChange={(e) => setFormData({...formData, imagen: e.target.value})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
-                  />
+                  <label className="block text-sm font-medium text-gray-700">Imagen del Producto</label>
+                  <div className="mt-1 flex items-center space-x-4">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                    />
+                    {uploading && <p className="text-sm text-gray-500">Subiendo...</p>}
+                  </div>
+                  {formData.imagen && (
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-500">Vista previa:</p>
+                      <Image
+                        src={formData.imagen}
+                        alt="Vista previa"
+                        width={100}
+                        height={100}
+                        className="mt-2 rounded-md object-cover border"
+                      />
+                    </div>
+                  )}
+                  {!formData.imagen && !editingCelular && (
+                     <p className="text-xs text-red-600 mt-1">Se requiere una imagen.</p>
+                  )}
+                   <input type="hidden" value={formData.imagen} required />
                 </div>
 
                 <div>

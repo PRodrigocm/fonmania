@@ -19,11 +19,19 @@ async function main() {
   await prisma.rol.deleteMany();
   await prisma.permiso.deleteMany();
 
-  /* 2. Roles / Permisos / Usuario Admin */
+  /* 2. Roles / Permisos */
   const rolAdmin = await prisma.rol.create({ data: { nombre: 'Administrador' } });
+  const rolCliente = await prisma.rol.create({ data: { nombre: 'Usuario' } });
+  
   const permisoAdmin = await prisma.permiso.create({ data: { descripcion: 'Acceso total' } });
+  const permisoBasico = await prisma.permiso.create({ data: { descripcion: 'Acceso básico' } });
+  
   const rolPermisoAdmin = await prisma.rolPermiso.create({
     data: { rolID: rolAdmin.ID, permisoID: permisoAdmin.ID }
+  });
+  
+  const rolPermisoCliente = await prisma.rolPermiso.create({
+    data: { rolID: rolCliente.ID, permisoID: permisoBasico.ID }
   });
 
   const adminPass = await bcrypt.hash('admin123', 10);

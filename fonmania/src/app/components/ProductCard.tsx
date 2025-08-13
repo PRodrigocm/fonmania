@@ -42,7 +42,7 @@ export default function ProductCard({ producto, onCardClick }: ProductCardProps)
   useEffect(() => {
     const fetchReseñas = async () => {
       try {
-        const response = await fetch(`/api/productos/${producto.id}/reseñas`);
+        const response = await fetch(`/api/productos/${producto.id}/resenas`);
         if (response.ok) {
           const data = await response.json();
           setReseñasData(data);
@@ -61,11 +61,17 @@ export default function ProductCard({ producto, onCardClick }: ProductCardProps)
   
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('Botón agregar al carrito clickeado para:', producto.nombre);
+    console.log('Producto completo:', producto);
     addToCart(producto);
   };
 
   const handleFavoriteToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('handleFavoriteToggle - producto.id:', producto.id);
+    console.log('handleFavoriteToggle - tipo de producto.id:', typeof producto.id);
+    console.log('handleFavoriteToggle - producto completo:', producto);
+    
     if (isFavorito) {
       removeFromFavorites(producto.id);
     } else {
@@ -86,7 +92,7 @@ export default function ProductCard({ producto, onCardClick }: ProductCardProps)
   
   return (
     <div
-      className={`bg-white rounded-lg shadow p-4 flex flex-col items-center w-full transition-transform duration-200 hover:scale-105 hover:shadow-2xl relative ${isAccesorio ? '' : 'cursor-pointer'}`}
+      className={`bg-white rounded-lg shadow p-3 flex flex-col items-center w-full max-w-[180px] min-h-[300px] transition-transform duration-200 hover:scale-105 hover:shadow-2xl relative ${isAccesorio ? '' : 'cursor-pointer'}`}
       onClick={isAccesorio ? undefined : handleCardClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -103,15 +109,16 @@ export default function ProductCard({ producto, onCardClick }: ProductCardProps)
         )}
       </button>
 
-      <Image 
-        src={src} 
-        alt={nombre || "Imagen de producto"} 
-        width={120} 
-        height={120} 
-        className="object-contain mx-auto w-full max-w-[120px] h-auto" 
-        style={{ height: "auto" }} 
-      />
-      <h3 className="font-title text-xl mt-2 mb-1 text-center">{nombre}</h3>
+      <div className="w-full h-32 flex items-center justify-center overflow-hidden">
+        <Image
+          src={src}
+          alt={nombre || "Imagen de producto"}
+          width={140}
+          height={140}
+          className="object-contain w-full h-full"
+        />
+      </div>
+      <h3 className="font-title text-lg mt-2 mb-1 text-center line-clamp-2">{nombre}</h3>
       
       {/* Calificación y reseñas */}
       {reseñasData && reseñasData.totalReseñas > 0 && (
@@ -125,14 +132,14 @@ export default function ProductCard({ producto, onCardClick }: ProductCardProps)
         </div>
       )}
       
-      <span className="text-lg font-bold text-[var(--color-morado)]">
+      <span className="text-base font-bold text-[var(--color-morado)]">
         S/ {typeof precio === 'number' ? precio.toFixed(2) : precio}
       </span>
-      {marca && <p className="text-sm text-gray-600 mt-1">{marca}</p>}
+      {marca && <p className="text-xs text-gray-600 mt-1">{marca}</p>}
       
       {/* Detalles dentro de la carta en hover, debajo del precio */}
       {hovered && showDetails && (
-        <div className="w-full bg-white rounded-xl border border-[var(--color-morado)/20] p-3 my-2 text-sm text-gray-700 animate-fade-in">
+        <div className="w-full bg-white rounded-xl border border-[var(--color-morado)/20] p-2 my-2 text-xs text-gray-700 animate-fade-in">
           {descripcion && <div className="mb-1"><b>Descripción:</b> {descripcion}</div>}
           {compatibilidad && <div><b>Compatibilidad:</b> {compatibilidad}</div>}
           {dimensiones && <div><b>Dimensiones:</b> {dimensiones}</div>}
@@ -143,7 +150,7 @@ export default function ProductCard({ producto, onCardClick }: ProductCardProps)
       )}
       
       <button
-        className="mt-3 px-4 py-2 rounded bg-[var(--color-morado)] text-[var(--color-amarillo)] font-title hover:bg-[var(--color-amarillo)] hover:text-[var(--color-morado)] transition"
+        className="mt-2 px-3 py-1.5 text-sm rounded bg-[var(--color-morado)] text-[var(--color-amarillo)] font-title hover:bg-[var(--color-amarillo)] hover:text-[var(--color-morado)] transition"
         onClick={handleAddToCart}
       >
         Agregar al carrito

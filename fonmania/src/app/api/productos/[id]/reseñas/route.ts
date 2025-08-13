@@ -17,32 +17,31 @@ export async function GET(
       return NextResponse.json({ error: 'ID de producto inválido' }, { status: 400 });
     }
 
-    // TODO: Implementar reseñas cuando se agregue el modelo al schema
-    // const reseñas = await prisma.reseña.findMany({
-    //   where: {
-    //     productoID: productoId
-    //   },
-    //   include: {
-    //     usuario: {
-    //       select: {
-    //         nombre: true
-    //       }
-    //     }
-    //   },
-    //   orderBy: {
-    //     fecha: 'desc'
-    //   }
-    // });
+    const reseñas = await prisma.resena.findMany({
+      where: {
+        productoID: productoId
+      },
+      include: {
+        usuario: {
+          select: {
+            nombre: true
+          }
+        }
+      },
+      orderBy: {
+        fecha: 'desc'
+      }
+    });
 
     // Calcular calificación promedio
-    // const calificacionPromedio = reseñas.length > 0 
-    //   ? reseñas.reduce((acc, reseña) => acc + reseña.calificacion, 0) / reseñas.length 
-    //   : 0;
+    const calificacionPromedio = reseñas.length > 0 
+      ? reseñas.reduce((acc: number, reseña: { calificacion: number }) => acc + reseña.calificacion, 0) / reseñas.length 
+      : 0;
 
     return NextResponse.json({
-      reseñas: [],
-      calificacionPromedio: 0,
-      totalReseñas: 0
+      reseñas,
+      calificacionPromedio,
+      totalReseñas: reseñas.length
     });
   } catch (error) {
     console.error('Error obteniendo reseñas:', error);
@@ -80,38 +79,37 @@ export async function POST(
       return NextResponse.json({ error: 'Calificación debe estar entre 1 y 5' }, { status: 400 });
     }
 
-    // TODO: Implementar reseñas cuando se agregue el modelo al schema
-    // // Verificar si el usuario ya ha reseñado este producto
-    // const reseñaExistente = await prisma.reseña.findFirst({
-    //   where: {
-    //     usuarioID: usuarioId,
-    //     productoID: productoId
-    //   }
-    // });
+    // Verificar si el usuario ya ha reseñado este producto
+    const resenaExistente = await prisma.resena.findFirst({
+      where: {
+        usuarioID: usuarioId,
+        productoID: productoId
+      }
+    });
 
-    // if (reseñaExistente) {
-    //   return NextResponse.json({ error: 'Ya has reseñado este producto' }, { status: 400 });
-    // }
+    if (resenaExistente) {
+      return NextResponse.json({ error: 'Ya has reseñado este producto' }, { status: 400 });
+    }
 
-    // // Crear la reseña
-    // const nuevaReseña = await prisma.reseña.create({
-    //   data: {
-    //     usuarioID: usuarioId,
-    //     productoID: productoId,
-    //     calificacion,
-    //     comentario,
-    //     fecha: new Date().toISOString()
-    //   },
-    //   include: {
-    //     usuario: {
-    //       select: {
-    //         nombre: true
-    //       }
-    //     }
-    //   }
-    // });
+    // Crear la reseña
+    const nuevaResena = await prisma.resena.create({
+      data: {
+        usuarioID: usuarioId,
+        productoID: productoId,
+        calificacion,
+        comentario,
+        fecha: new Date()
+      },
+      include: {
+        usuario: {
+          select: {
+            nombre: true
+          }
+        }
+      }
+    });
 
-    return NextResponse.json({ message: 'Funcionalidad de reseñas no implementada aún' }, { status: 501 });
+    return NextResponse.json(nuevaResena);
   } catch (error) {
     console.error('Error creando reseña:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });

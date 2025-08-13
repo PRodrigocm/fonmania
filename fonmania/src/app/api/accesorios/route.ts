@@ -20,30 +20,15 @@ export async function GET() {
         categoria: true,
         marca: true,
         imagenes: {
-          where: { tipo: 'principal' },
-          take: 1
-        },
-        detalles: {
-          include: {
-            detalleCategoria: true
+          orderBy: {
+            orden: 'asc'
           }
         }
       }
     });
 
     const accesoriosFormateados = accesorios.map((producto) => {
-      // Buscar detalles específicos
-      const color = producto.detalles.find((d) => 
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('color')
-      )?.valor || 'N/A';
-      
-      const compatibilidad = producto.detalles.find((d) => 
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('compatibilidad')
-      )?.valor || 'N/A';
 
-      const dimensiones = producto.detalles.find((d) => 
-        d.detalleCategoria.nombre_atributo.toLowerCase().includes('dimensiones')
-      )?.valor || 'N/A';
 
       return {
         id: producto.ID,
@@ -52,12 +37,10 @@ export async function GET() {
         marca: producto.marca.nombre,
         categoria: producto.categoria.nombre,
         imagen: producto.imagenes[0]?.url || '/img/cat_3.png',
-        color,
-        almacenamiento: 'N/A',
+        color: undefined,
+        almacenamiento: undefined,
         stock: producto.stock,
         descripcion: producto.descripcion,
-        compatibilidad,
-        dimensiones,
         tipo: 'accesorio'
       };
     });
@@ -106,10 +89,17 @@ export async function POST(request: NextRequest) {
       data: {
         nombre: data.nombre,
         precio: parseFloat(data.precio),
-        descripcion: data.descripcion || '',
+        descripcion: data.descripcion || 'Sin descripción',
         stock: data.stock || 0,
         categoriaID: categoriaAccesorio.ID,
-        marcaID: marca.ID
+        marcaID: marca.ID,
+        // Campos requeridos por el modelo Producto, pero no aplicables a accesorios
+        ram: 'N/A',
+        almacenamiento: 'N/A',
+        dimensiones: data.dimensiones || 'N/A',
+        modelo: data.modelo || 'N/A',
+        color: data.color || 'N/A',
+        sistema_operativo: 'N/A'
       }
     });
 
@@ -125,63 +115,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Crear detalles del producto si se proporcionan
-    if (data.compatibilidad) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaAccesorio.ID,
-          nombre_atributo: 'Compatibilidad'
-        }
-      });
 
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.compatibilidad
-          }
-        });
-      }
-    }
-
-    if (data.dimensiones) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaAccesorio.ID,
-          nombre_atributo: 'Dimensiones'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.dimensiones
-          }
-        });
-      }
-    }
-
-    if (data.peso) {
-      const detalleCategoria = await prisma.detalleCategoria.findFirst({
-        where: {
-          categoriaID: categoriaAccesorio.ID,
-          nombre_atributo: 'Peso'
-        }
-      });
-
-      if (detalleCategoria) {
-        await prisma.productoDetalle.create({
-          data: {
-            productoID: producto.ID,
-            detallecategoriaID: detalleCategoria.ID,
-            valor: data.peso
-          }
-        });
-      }
-    }
 
     return NextResponse.json(producto, { status: 201 });
   } catch (error) {

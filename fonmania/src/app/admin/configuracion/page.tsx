@@ -155,7 +155,7 @@ export default function AdminConfiguracion() {
                 type="text"
                 value={configuracion.nombreSitio}
                 onChange={(e) => handleChange('general', 'nombreSitio', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
               />
             </div>
 
@@ -165,7 +165,7 @@ export default function AdminConfiguracion() {
                 type="email"
                 value={configuracion.emailContacto}
                 onChange={(e) => handleChange('general', 'emailContacto', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
               />
             </div>
 
@@ -175,7 +175,7 @@ export default function AdminConfiguracion() {
                 type="text"
                 value={configuracion.telefono}
                 onChange={(e) => handleChange('general', 'telefono', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
               />
             </div>
 
@@ -185,7 +185,7 @@ export default function AdminConfiguracion() {
                 type="text"
                 value={configuracion.direccion}
                 onChange={(e) => handleChange('general', 'direccion', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
               />
             </div>
 
@@ -195,7 +195,7 @@ export default function AdminConfiguracion() {
                 value={configuracion.descripcion}
                 onChange={(e) => handleChange('general', 'descripcion', e.target.value)}
                 rows={3}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
               />
             </div>
           </div>
@@ -215,7 +215,7 @@ export default function AdminConfiguracion() {
                 type="url"
                 value={configuracion.redesSociales.facebook}
                 onChange={(e) => handleChange('redesSociales', 'facebook', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 placeholder="https://facebook.com/fonmania"
               />
             </div>
@@ -226,7 +226,7 @@ export default function AdminConfiguracion() {
                 type="url"
                 value={configuracion.redesSociales.instagram}
                 onChange={(e) => handleChange('redesSociales', 'instagram', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 placeholder="https://instagram.com/fonmania"
               />
             </div>
@@ -237,7 +237,7 @@ export default function AdminConfiguracion() {
                 type="url"
                 value={configuracion.redesSociales.twitter}
                 onChange={(e) => handleChange('redesSociales', 'twitter', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 placeholder="https://twitter.com/fonmania"
               />
             </div>
@@ -258,7 +258,7 @@ export default function AdminConfiguracion() {
                 type="text"
                 value={configuracion.configuracionEmail.servidor}
                 onChange={(e) => handleChange('configuracionEmail', 'servidor', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 placeholder="smtp.gmail.com"
               />
             </div>
@@ -269,7 +269,7 @@ export default function AdminConfiguracion() {
                 type="text"
                 value={configuracion.configuracionEmail.puerto}
                 onChange={(e) => handleChange('configuracionEmail', 'puerto', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 placeholder="587"
               />
             </div>
@@ -280,7 +280,7 @@ export default function AdminConfiguracion() {
                 type="email"
                 value={configuracion.configuracionEmail.usuario}
                 onChange={(e) => handleChange('configuracionEmail', 'usuario', e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 placeholder="admin@fonmania.com"
               />
             </div>
@@ -292,7 +292,7 @@ export default function AdminConfiguracion() {
                   type={showPassword ? 'text' : 'password'}
                   value={configuracion.configuracionEmail.contrasena}
                   onChange={(e) => handleChange('configuracionEmail', 'contrasena', e.target.value)}
-                  className="mt-1 block w-full pr-10 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  className="mt-1 block w-full pr-10 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                 />
                 <button
                   type="button"

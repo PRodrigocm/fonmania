@@ -34,6 +34,7 @@ model Producto {
   promociones    ProductoPromocion[]
   pedidoDetalles PedidoDetalle[]
   favoritos      Favorito[]
+  resenas        Resena[]
 }
 
 model ImagenProducto {
@@ -126,9 +127,25 @@ model Usuario {
   direccion      String
   DNI            Int      @unique
 
-  rolPermiso RolPermiso @relation(fields: [rolpermisoID], references: [ID])
-  pedidos    Pedido[]
-  favoritos  Favorito[]
+  rolPermiso   RolPermiso   @relation(fields: [rolpermisoID], references: [ID])
+  pedidos      Pedido[]
+  favoritos    Favorito[]
+  resenas      Resena[]
+  actividades  Actividad[]
+}
+
+model Resena {
+  ID         Int      @id @default(autoincrement())
+  usuarioID  Int
+  productoID Int
+  calificacion Int
+  comentario String
+  fecha      DateTime @default(now())
+
+  usuario  Usuario  @relation(fields: [usuarioID], references: [ID])
+  producto Producto @relation(fields: [productoID], references: [ID])
+
+  @@unique([usuarioID, productoID])
 }
 
 model Favorito {
@@ -160,4 +177,16 @@ model RolPermiso {
   rol      Rol       @relation(fields: [rolID], references: [ID])
   permiso  Permiso   @relation(fields: [permisoID], references: [ID])
   usuarios Usuario[]
+}
+
+model Actividad {
+  ID          Int      @id @default(autoincrement())
+  tipo        String   // 'producto_creado', 'pedido_recibido', 'promocion_creada', etc.
+  descripcion String
+  entidad     String?  // nombre del producto, número de pedido, etc.
+  usuarioID   Int?     // usuario que realizó la acción (opcional para acciones del sistema)
+  fecha       DateTime @default(now())
+  metadata    String?  // JSON con información adicional
+
+  usuario Usuario? @relation(fields: [usuarioID], references: [ID])
 }

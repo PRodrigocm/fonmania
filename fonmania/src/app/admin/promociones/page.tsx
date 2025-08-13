@@ -179,7 +179,7 @@ export default function AdminPromociones() {
           placeholder="Buscar promociones..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
         />
       </div>
 
@@ -259,7 +259,7 @@ export default function AdminPromociones() {
                       required
                       value={formData.nombre}
                       onChange={(e) => setFormData({...formData, nombre: e.target.value})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                     />
                   </div>
                   
@@ -268,7 +268,7 @@ export default function AdminPromociones() {
                     <select
                       value={formData.tipo}
                       onChange={(e) => setFormData({...formData, tipo: e.target.value as 'porcentaje' | 'monto_fijo'})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                     >
                       <option value="porcentaje">Porcentaje (%)</option>
                       <option value="monto_fijo">Monto Fijo ($)</option>
@@ -284,7 +284,7 @@ export default function AdminPromociones() {
                       required
                       value={formData.valor}
                       onChange={(e) => setFormData({...formData, valor: e.target.value})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                     />
                   </div>
 
@@ -293,7 +293,7 @@ export default function AdminPromociones() {
                     <select
                       value={formData.activa.toString()}
                       onChange={(e) => setFormData({...formData, activa: e.target.value === 'true'})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                     >
                       <option value="true">Activa</option>
                       <option value="false">Inactiva</option>
@@ -307,7 +307,7 @@ export default function AdminPromociones() {
                       required
                       value={formData.fechaInicio}
                       onChange={(e) => setFormData({...formData, fechaInicio: e.target.value})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                     />
                   </div>
 
@@ -318,7 +318,7 @@ export default function AdminPromociones() {
                       required
                       value={formData.fechaFin}
                       onChange={(e) => setFormData({...formData, fechaFin: e.target.value})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                     />
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function AdminPromociones() {
                     type="url"
                     value={formData.imagen}
                     onChange={(e) => setFormData({...formData, imagen: e.target.value})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                   />
                 </div>
 
@@ -340,7 +340,7 @@ export default function AdminPromociones() {
                     value={formData.descripcion}
                     onChange={(e) => setFormData({...formData, descripcion: e.target.value})}
                     rows={3}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-900"
                   />
                 </div>
 

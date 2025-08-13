@@ -3,8 +3,10 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+// Ejecuta con: npx prisma db seed
+// Se asegura de poblar tablas respetando las relaciones del esquema actual.
 async function main() {
-  // Limpiar datos según dependencias
+  // 1. Limpieza en el orden correcto (dependencias)
   await prisma.pedidoDetalle.deleteMany();
   await prisma.pedido.deleteMany();
   await prisma.envio.deleteMany();

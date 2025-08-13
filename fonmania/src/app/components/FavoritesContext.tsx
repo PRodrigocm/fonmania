@@ -45,8 +45,19 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     loadFavorites();
   }, []);
 
-  const addToFavorites = async (productId: number) => {
+  const addToFavorites = async (productId: number | string) => {
     try {
+      console.log('addToFavorites llamado con productId:', productId);
+      console.log('Tipo de productId:', typeof productId);
+      
+      // Convertir a número si es string
+      const numericId = typeof productId === 'string' ? parseInt(productId, 10) : productId;
+      
+      if (!numericId || numericId <= 0 || isNaN(numericId)) {
+        console.error('ID de producto inválido:', productId, 'convertido a:', numericId);
+        return;
+      }
+
       const token = localStorage.getItem('userToken');
       if (!token) {
         // Redirigir al login si no está autenticado
@@ -54,17 +65,19 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      console.log('Enviando a API favoritos:', { productoID: numericId });
+
       const response = await fetch('/api/favoritos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ productoID: productId })
+        body: JSON.stringify({ productoID: numericId })
       });
 
       if (response.ok) {
-        setFavorites(prev => [...prev, productId]);
+        setFavorites(prev => [...prev, numericId]);
       } else if (response.status === 401) {
         // Token inválido, redirigir al login
         localStorage.removeItem('userToken');

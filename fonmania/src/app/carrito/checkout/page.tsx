@@ -51,6 +51,32 @@ function CheckoutContent() {
     }
   }, [items, router]);
 
+  // Cargar datos del usuario logueado
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(async res => {
+        if (!res.ok) return null;
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) return null;
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.user) {
+          setForm(prev => ({
+            ...prev,
+            nombre: data.user.nombre || "",
+            apellido: data.user.apellido || "",
+            email: data.user.email || "",
+            telefono: data.user.telefono || "",
+            direccion: data.user.direccion || "",
+            ciudad: data.user.ciudad || "",
+            dni: data.user.dni || ""
+          }));
+        }
+      })
+      .catch(err => console.error('Error obteniendo usuario:', err));
+  }, []);
+
   // Solución hidratación: número de orden solo en cliente
   const [orderId, setOrderId] = useState<string | null>(null);
   useEffect(() => {
@@ -271,6 +297,7 @@ function CheckoutContent() {
             <div className="absolute left-0 bottom-0 h-1 bg-[var(--color-morado)] transition-all duration-500 rounded-full" style={{ width: `${progreso}%` }} />
           </div>
           {/* Contenido del paso */}
+          
           {paso === 0 && PasoEnvio}
           {paso === 1 && PasoPago}
           {paso === 2 && PasoConfirmar}

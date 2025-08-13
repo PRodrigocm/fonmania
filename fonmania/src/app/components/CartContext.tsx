@@ -42,14 +42,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addToCart = (producto: Producto) => {
+    console.log('Agregando producto al carrito:', producto);
     setItems((prev) => {
       const found = prev.find((item) => item.id === producto.id);
+      console.log('Producto encontrado en carrito:', found);
       if (found) {
+        console.log('Incrementando cantidad del producto existente');
         return prev.map((item) =>
           item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
         );
       }
-      return [...prev, { ...producto, cantidad: 1 }];
+      console.log('Agregando nuevo producto al carrito');
+      const newItems = [...prev, { ...producto, cantidad: 1 }];
+      console.log('Carrito actualizado:', newItems);
+      return newItems;
     });
   };
 

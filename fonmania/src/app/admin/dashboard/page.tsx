@@ -7,7 +7,10 @@ import {
   GiftIcon,
   ArrowTrendingUpIcon,
   CurrencyDollarIcon,
-  ClockIcon
+  ClockIcon,
+  UserIcon,
+  CheckCircleIcon,
+  PlusCircleIcon
 } from '@heroicons/react/24/outline';
 
 interface DashboardStats {
@@ -20,6 +23,19 @@ interface DashboardStats {
   usuariosRegistrados: number;
 }
 
+interface Activity {
+  ID: number;
+  tipo: string;
+  descripcion: string;
+  entidad: string | null;
+  usuarioID: number | null;
+  fecha: string;
+  metadata: string | null;
+  usuario?: {
+    nombre: string;
+  } | null;
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     totalCelulares: 0,
@@ -30,10 +46,13 @@ export default function AdminDashboard() {
     pedidosPendientes: 0,
     usuariosRegistrados: 0,
   });
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
 
   useEffect(() => {
     fetchDashboardStats();
+    fetchRecentActivities();
   }, []);
 
   const fetchDashboardStats = async () => {
@@ -48,6 +67,78 @@ export default function AdminDashboard() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchRecentActivities = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/admin/activities?limit=8', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setActivities(data.activities);
+      }
+    } catch (error) {
+      console.error('Error fetching activities:', error);
+    } finally {
+      setActivitiesLoading(false);
+    }
+  };
+
+  const getActivityIcon = (tipo: string) => {
+    switch (tipo) {
+      case 'producto_creado':
+        return PlusCircleIcon;
+      case 'pedido_recibido':
+        return ShoppingBagIcon;
+      case 'promocion_creada':
+        return GiftIcon;
+      case 'usuario_registrado':
+        return UserIcon;
+      case 'producto_actualizado':
+        return DevicePhoneMobileIcon;
+      case 'pedido_actualizado':
+        return CheckCircleIcon;
+      default:
+        return ClockIcon;
+    }
+  };
+
+  const getActivityColor = (tipo: string) => {
+    switch (tipo) {
+      case 'producto_creado':
+        return 'bg-green-500';
+      case 'pedido_recibido':
+        return 'bg-blue-500';
+      case 'promocion_creada':
+        return 'bg-yellow-500';
+      case 'usuario_registrado':
+        return 'bg-purple-500';
+      case 'producto_actualizado':
+        return 'bg-indigo-500';
+      case 'pedido_actualizado':
+        return 'bg-emerald-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const formatTimeAgo = (fecha: string) => {
+    const now = new Date();
+    const activityDate = new Date(fecha);
+    const diffInMinutes = Math.floor((now.getTime() - activityDate.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'hace un momento';
+    if (diffInMinutes < 60) return `hace ${diffInMinutes} minuto${diffInMinutes > 1 ? 's' : ''}`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `hace ${diffInHours} hora${diffInHours > 1 ? 's' : ''}`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `hace ${diffInDays} día${diffInDays > 1 ? 's' : ''}`;
   };
 
   const statCards = [
@@ -170,30 +261,53 @@ export default function AdminDashboard() {
 
       {/* Recent Activity */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Actividad Reciente</h2>
-        <div className="space-y-4">
-          <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-            <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Nuevo celular agregado</p>
-              <p className="text-xs text-gray-500">iPhone 15 Pro Max - hace 2 horas</p>
-            </div>
-          </div>
-          <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-            <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Promoción creada</p>
-              <p className="text-xs text-gray-500">Descuento 20% en accesorios - hace 4 horas</p>
-            </div>
-          </div>
-          <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-            <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Nuevo pedido recibido</p>
-              <p className="text-xs text-gray-500">Pedido #1234 - hace 6 horas</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Actividad Reciente</h2>
+          <button 
+            onClick={fetchRecentActivities}
+            className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            disabled={activitiesLoading}
+          >
+            {activitiesLoading ? 'Cargando...' : 'Actualizar'}
+          </button>
         </div>
+        
+        {activitiesLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : activities.length > 0 ? (
+          <div className="space-y-3">
+            {activities.map((activity) => {
+              const IconComponent = getActivityIcon(activity.tipo);
+              const colorClass = getActivityColor(activity.tipo);
+              
+              return (
+                <div key={activity.ID} className="flex items-start p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className={`p-2 rounded-full ${colorClass} mr-3 flex-shrink-0`}>
+                    <IconComponent className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {activity.descripcion}
+                    </p>
+                    <div className="flex items-center text-xs text-gray-500 mt-1">
+                      <span>{formatTimeAgo(activity.fecha)}</span>
+                      {activity.usuario && (
+                        <span className="ml-2">• por {activity.usuario.nombre}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+            <p className="text-sm text-gray-500">No hay actividades recientes</p>
+          </div>
+        )}
       </div>
     </div>
   );

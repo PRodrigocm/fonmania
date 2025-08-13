@@ -12,7 +12,8 @@ import {
   CubeIcon,
   ChartBarIcon,
   UserIcon,
-  ArrowLeftOnRectangleIcon
+  ArrowLeftOnRectangleIcon,
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 
 export default function AdminLayout({
@@ -68,9 +69,10 @@ export default function AdminLayout({
 
   const menuItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
-    { name: 'Celulares', href: '/admin/celulares', icon: DevicePhoneMobileIcon },
-    { name: 'Accesorios', href: '/admin/accesorios', icon: CubeIcon },
+    { name: 'Productos', href: '/admin/productos', icon: DevicePhoneMobileIcon },
     { name: 'Promociones', href: '/admin/promociones', icon: TagIcon },
+    { name: 'Usuarios', href: '/admin/usuarios', icon: UserIcon },
+    { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon },
     { name: 'Imágenes', href: '/admin/imagenes', icon: PhotoIcon },
     { name: 'Estadísticas', href: '/admin/estadisticas', icon: ChartBarIcon },
     { name: 'Configuración', href: '/admin/configuracion', icon: CogIcon },

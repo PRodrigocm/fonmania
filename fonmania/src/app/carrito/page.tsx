@@ -108,8 +108,8 @@ export default function Carrito() {
           </div>
           
           <div className="flex flex-col gap-4 mb-6">
-            {items.map((producto) => (
-              <div key={producto.id} className="flex items-center gap-4 bg-gray-50 rounded-xl p-4">
+            {items.map((producto, index) => (
+              <div key={`carrito-item-${producto.id}-${index}`} className="flex items-center gap-4 bg-gray-50 rounded-xl p-4">
                 <div 
                   className="flex items-center gap-4 flex-1 cursor-pointer hover:bg-gray-100 rounded-lg p-2 transition"
                   onClick={() => handleProductClick(producto)}

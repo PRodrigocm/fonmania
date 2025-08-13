@@ -306,14 +306,54 @@ export default function CelularesPage() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProductos.map((producto) => (
-                <ProductCard 
-                  key={producto.id} 
-                  producto={producto}
-                  onCardClick={handleProductClick}
-                />
-              ))}
+            <div className="space-y-12">
+              {/* Samsung */}
+              <div>
+                <h2 className="font-title text-3xl font-bold text-[var(--color-morado)] mb-6">Samsung</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+                  {filteredProductos.filter(p => p.marca === 'Samsung').map(producto => (
+                    <div key={producto.id} className="flex justify-center">
+                      <ProductCard producto={producto} onCardClick={handleProductClick} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Apple */}
+              <div>
+                <h2 className="font-title text-3xl font-bold text-[var(--color-morado)] mb-6">Apple</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+                  {filteredProductos.filter(p => p.marca === 'Apple').map(producto => (
+                    <div key={producto.id} className="flex justify-center">
+                      <ProductCard producto={producto} onCardClick={handleProductClick} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Xiaomi */}
+              <div>
+                <h2 className="font-title text-3xl font-bold text-[var(--color-morado)] mb-6">Xiaomi</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+                  {filteredProductos.filter(p => p.marca === 'Xiaomi').map(producto => (
+                    <div key={producto.id} className="flex justify-center">
+                      <ProductCard producto={producto} onCardClick={handleProductClick} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Motorola */}
+              <div>
+                <h2 className="font-title text-3xl font-bold text-[var(--color-morado)] mb-6">Motorola</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+                  {filteredProductos.filter(p => p.marca === 'Motorola').map(producto => (
+                    <div key={producto.id} className="flex justify-center">
+                      <ProductCard producto={producto} onCardClick={handleProductClick} />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
